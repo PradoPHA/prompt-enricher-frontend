@@ -13,32 +13,42 @@ export const Wrapper = styled.header`
 
 export const Header = styled.header`
   display: flex;
-  justify-content: space-between; /* Para garantir que os ícones fiquem nas extremidades */
+  justify-content: space-between;
   align-items: center;
   background-color: rgb(19, 17, 17);
   color: white;
   width: 100%;
-  margin: 0; /* Remove qualquer margem extra */
-  padding: 0 20px; /* Padding nas laterais para alinhamento */
+  margin: 0;
+  padding: 0 20px;
 
   h1 {
-    text-align: center; /* Centraliza o título */
-    flex: 1; /* Isso garante que o título ocupe o máximo de espaço possível */
+    text-align: center;
+    flex: 1;
     margin: 0;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-family: "Roboto", sans-serif;
   }
 
   .logo-container {
     display: flex;
     align-items: center;
-    gap: 10px; /* Pequeno espaçamento entre logo e título */
+    gap: 10px;
   }
 
   .social-links {
     display: flex;
-    gap: 15px;
+    gap: 25px;
   }
 
   .social-links a {
-    color: white;
+    color: #ffffff;
+    font-size: 1.5rem;
+    transition: transform 0.2s ease-in-out, color 0.3s ease;
+  }
+
+  .social-links a:hover {
+    transform: scale(1.2);
+    color: #4caf50;
   }
 `;

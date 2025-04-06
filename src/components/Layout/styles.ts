@@ -16,11 +16,11 @@ export const GlobalStyle = createGlobalStyle`
   body {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Garantir que o body ocupe a altura total da tela */
+    min-height: 100vh; 
   }
 
   main {
-    flex: 1; /* Faz com que o conteúdo principal ocupe o espaço restante */
+    flex: 1; 
   }
 
 

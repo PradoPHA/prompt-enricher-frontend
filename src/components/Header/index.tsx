@@ -17,14 +17,14 @@ export const Header = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaGithub size={25} color="white" /> {/* Ícone do GitHub */}
+            <FaGithub size={28} />
           </a>
           <a
             href="https://linkedin.com/in/phaprado"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaLinkedin size={25} color="white" /> {/* Ícone do LinkedIn */}
+            <FaLinkedin size={28} />
           </a>
         </div>
       </S.Header>

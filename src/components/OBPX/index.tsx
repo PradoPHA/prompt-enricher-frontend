@@ -4,22 +4,40 @@ import { EnrichedPromptResult } from "./types";
 
 // Opções predefinidas de precisão
 const precisionLevels = [
-  { label: "Muito baixa", value: "precisao_muito_baixa" },
-  { label: "Baixa", value: "precisao_baixa" },
-  { label: "Média", value: "precisao_media" },
-  { label: "Alta", value: "precisao_alta" },
-  { label: "Muito alta", value: "precisao_muito_alta" },
+  { label: "Very low", value: "very_low_precision" },
+  { label: "Low", value: "low_precision" },
+  { label: "Medium", value: "medium_precision" },
+  { label: "High", value: "high_precision" },
+  { label: "Very high", value: "very_high_precision" },
 ];
 
 export const OBPX = () => {
   const [prompt, setPrompt] = useState("");
-  const [precisionIndex, setPrecisionIndex] = useState(2); // Começa com "Média"
+  const [precisionIndex, setPrecisionIndex] = useState(2);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<EnrichedPromptResult | null>(null);
-  const [error, setError] = useState<string | null>(null); // Estado para armazenar o erro
+  const [error, setError] = useState<string | null>(null);
+  const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    const element = document.getElementById("promptContent");
+    if (element) {
+      const text = element.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 15000); // Reseta o botão após 15 segundos
+      });
+    }
+    if (element) {
+      navigator.clipboard.writeText(element.innerText).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 15000); // Reseta o botão após 15 segundos
+      });
+    }
+  };
 
   const handleEnrichClick = async () => {
-    // Limpar erro antes de uma nova tentativa
     setError(null);
 
     const payload = {
@@ -40,7 +58,7 @@ export const OBPX = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Falha na comunicação com o backend.");
+        throw new Error("Failed to communicate with the backend.");
       }
 
       const data = await response.json();
@@ -48,8 +66,8 @@ export const OBPX = () => {
     } catch (error) {
       console.error("Error:", error);
       setError(
-        "Ocorreu um erro ao tentar enriquecer o prompt. Tente novamente mais tarde."
-      ); // Exibe mensagem de erro
+        "An error occurred while trying to enhance the prompt. Please try again later."
+      );
     } finally {
       setLoading(false);
     }
@@ -63,7 +81,7 @@ export const OBPX = () => {
         <h2>
           This prototype uses the{" "}
           <a
-            href="https://obofoundry.org/ontology/mfoem.html"
+            href="https://ontobee.org/ontology/MFOEM"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -77,11 +95,10 @@ export const OBPX = () => {
         <S.Textarea
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Digite o seu prompt..."
+          placeholder="Enter your prompt...."
         />
 
-        {/* Slider de Precisão */}
-        <S.Label>Precisão: {precisionLevels[precisionIndex].label}</S.Label>
+        <S.Label>Precision: {precisionLevels[precisionIndex].label}</S.Label>
         <S.ThresholdSlider
           type="range"
           min="0"
@@ -94,10 +111,10 @@ export const OBPX = () => {
         <S.Button onClick={handleEnrichClick} disabled={loading}>
           {loading ? (
             <>
-              Enriquecendo... <S.LoadingSpinner />
+              Expanding... <S.LoadingSpinner />
             </>
           ) : (
-            "Enriquecer"
+            "Expand"
           )}
         </S.Button>
       </S.Form>
@@ -109,42 +126,69 @@ export const OBPX = () => {
       )}
 
       {result && (
-        <S.Result>
-          <h3>Resultado:</h3>
-          <p>
-            <strong>Status:</strong> {result.Status}
-          </p>
-          <p>
-            <strong>Message:</strong> {result.Message}
-          </p>
-          <p>
-            <strong>Prompt original:</strong> {result["Prompt original"]}
-          </p>
-          <p>
-            <strong>Prompt enriquecido:</strong> {result["Prompt enriquecido"]}
-          </p>
-          <p>
-            <strong>Threshold utilizado:</strong>{" "}
-            {result["Threshold utilizado"]}
-          </p>
-          <p>
-            <strong>Nível de Precisão Utilizado:</strong>{" "}
-            {
-              precisionLevels.find(
-                (level) => level.value === result["Nível de precisão utilizado"]
-              )?.label
-            }
-          </p>
-          <p>
-            <strong>Termos-chave:</strong> {result["Termos-chave"].join(", ")}
-          </p>
-          <p>
-            <strong>Correspondências na ontologia:</strong>
-          </p>
-          <pre>
-            {JSON.stringify(result["Correspondências na ontologia"], null, 2)}
-          </pre>
-        </S.Result>
+        <>
+          <S.EnrichedPromptContainer>
+            <S.EnrichedPrompt>
+              {result["Enriched"] ? (
+                <>
+                  <h3>Enriched Prompt:</h3>
+                  <br />
+                  <p id="promptContent">{result["Enriched Prompt"]}</p>
+                  <S.CopyButton onClick={handleCopy}>
+                    {copied ? "Copied!" : "Copy"}
+                  </S.CopyButton>
+                </>
+              ) : (
+                <h3>This prompt could not be enriched!</h3>
+              )}
+            </S.EnrichedPrompt>
+          </S.EnrichedPromptContainer>
+
+          <S.ToggleDetailsButton
+            onClick={() => setShowAdvancedDetails((prev) => !prev)}
+          >
+            {showAdvancedDetails
+              ? "Hide Advanced Details"
+              : "Show Advanced Details"}
+          </S.ToggleDetailsButton>
+          {showAdvancedDetails && (
+            <S.Result>
+              <h3>Result:</h3>
+              <p>
+                <strong>Status:</strong> {result.Status}
+              </p>
+              <p>
+                <strong>Message:</strong> {result.Message}
+              </p>
+              <p>
+                <strong>Original Prompt</strong> {result["Original Prompt"]}
+              </p>
+              <p>
+                <strong>
+                  {result["Enriched"] ? "Threshold used:" : "Tried thresholds:"}
+                </strong>{" "}
+                {result["Enriched"]
+                  ? result["Threshold used"]
+                  : (result["Tried thresholds"] ?? []).join(", ")}
+              </p>
+              <p>
+                <strong>Precision level used:</strong>{" "}
+                {
+                  precisionLevels.find(
+                    (level) => level.value === result["Precision level used"]
+                  )?.label
+                }
+              </p>
+              <p>
+                <strong>Key terms:</strong> {result["Key terms"].join(", ")}
+              </p>
+              <p>
+                <strong>Ontology matches:</strong>
+              </p>
+              <pre>{JSON.stringify(result["Ontology matches"], null, 2)}</pre>
+            </S.Result>
+          )}
+        </>
       )}
     </S.Container>
   );

@@ -1,10 +1,12 @@
 export interface EnrichedPromptResult {
   Status: string;
+  Enriched: boolean;
   Message: string;
-  "Prompt original": string;
-  "Prompt enriquecido": string;
-  "Threshold utilizado": number;
-  "Nível de precisão utilizado": string;
-  "Termos-chave": string[];
-  "Correspondências na ontologia": Record<string, never>; // Aqui, podemos ajustar mais conforme o formato de matches_info
+  "Original Prompt": string;
+  "Enriched Prompt": string;
+  "Threshold used": number;
+  "Tried thresholds"?: number[];
+  "Precision level used": string;
+  "Key terms": string[];
+  "Ontology matches": Record<string, never>;
 }
