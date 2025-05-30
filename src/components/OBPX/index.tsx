@@ -49,7 +49,7 @@ export const OBPX = () => {
     setResult(null);
 
     try {
-      const response = await fetch("http://localhost:8000/enrich_prompt", {
+      const response = await fetch("https://web-production-ff2b.up.railway.app/enrich_prompt", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
